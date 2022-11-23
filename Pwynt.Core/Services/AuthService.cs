@@ -73,6 +73,34 @@ namespace Pwynt.Core.Services
             };
         }
 
+        public async Task<AuthDto> LoginAsync(LoginDto loginDto)
+        {
+            var authDto = new AuthDto();
+
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+
+            if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
+            {
+                authDto.Message = "Email or Password is incorrect.";
+                return authDto;
+            }
+
+            var jwtSecurityToken = await CreateJwtToken(user);
+            var roleList = await _userManager.GetRolesAsync(user);
+
+            authDto.Message = "Logged In.";
+            authDto.IsAuthenticated = true;
+            authDto.Email = user.Email;
+            authDto.UserName = user.UserName;
+            authDto.Roles = roleList.ToList();
+            authDto.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            authDto.ExpiresOn = jwtSecurityToken.ValidTo;
+
+
+
+            return authDto;
+        }
+
         private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
         {
             var userClaims = await _userManager.GetClaimsAsync(user);

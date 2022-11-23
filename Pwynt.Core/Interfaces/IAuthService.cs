@@ -10,5 +10,6 @@ namespace Pwynt.Core.Interfaces
     public interface IAuthService
     {
         Task<AuthDto> RegisterAsync(RegisterDto registerDto);
+        Task<AuthDto> LoginAsync(LoginDto loginDto);
     }
 }

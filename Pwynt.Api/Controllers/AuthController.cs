@@ -29,5 +29,19 @@ namespace Pwynt.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAsync(LoginDto loginDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.LoginAsync(loginDto);
+
+            if (!result.IsAuthenticated)
+                return BadRequest(result.Message);
+
+            return Ok(result);
+        }
     }
 }
