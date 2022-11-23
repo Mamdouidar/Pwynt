@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Pwynt.Core.Helpers;
+using Pwynt.Core.Interfaces;
+using Pwynt.Core.Services;
 using Pwynt.Data.Data;
 using Pwynt.Data.Models;
 using System.Text;
@@ -38,6 +40,7 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
         };
     });
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 

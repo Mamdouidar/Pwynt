@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Pwynt.Data\Pwynt.Data.csproj" />
+  </ItemGroup>
+
 </Project>
