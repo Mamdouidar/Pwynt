@@ -11,5 +11,6 @@ namespace Pwynt.Core.Interfaces
     {
         Task<AuthDto> RegisterAsync(RegisterDto registerDto);
         Task<AuthDto> LoginAsync(LoginDto loginDto);
+        Task<string> AddRoleAsync(AddRoleDto addRoleDto);
     }
 }

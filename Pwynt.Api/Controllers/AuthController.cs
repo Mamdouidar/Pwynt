@@ -43,5 +43,19 @@ namespace Pwynt.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("addrole")]
+        public async Task<IActionResult> AddRoleAsync(AddRoleDto addRoleDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.AddRoleAsync(addRoleDto);
+
+            if(!string.IsNullOrEmpty(result))
+                return BadRequest(result);
+
+            return Ok(addRoleDto);
+        }
     }
 }

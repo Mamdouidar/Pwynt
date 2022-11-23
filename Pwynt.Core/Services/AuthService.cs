@@ -19,11 +19,13 @@ namespace Pwynt.Core.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JWT _jwt;
 
-        public AuthService(UserManager<ApplicationUser> userManager, IOptions<JWT> jwt)
+        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _jwt = jwt.Value;
         }
 
@@ -96,9 +98,22 @@ namespace Pwynt.Core.Services
             authDto.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             authDto.ExpiresOn = jwtSecurityToken.ValidTo;
 
-
-
             return authDto;
+        }
+
+        public async Task<string> AddRoleAsync(AddRoleDto addRoleDto)
+        {
+            var user = await _userManager.FindByIdAsync(addRoleDto.UserId);
+
+            if (user is null || !await _roleManager.RoleExistsAsync(addRoleDto.Role))
+                return "Invalid user ID or Role.";
+
+            if (await _userManager.IsInRoleAsync(user, addRoleDto.Role))
+                return "User is already assigned to this role.";
+
+            var result = await _userManager.AddToRoleAsync(user, addRoleDto.Role);
+
+            return result.Succeeded ? string.Empty : "Something went wrong.";
         }
 
         private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
