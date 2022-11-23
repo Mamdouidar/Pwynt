@@ -1,11 +1,20 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Pwynt.Core.Helpers;
+using Pwynt.Data.Data;
+using Pwynt.Data.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddDbContext<PwyntDbContext>(e => e.UseSqlServer(builder.Configuration.GetConnectionString("Pwynt")));
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<PwyntDbContext>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
 var app = builder.Build();
 

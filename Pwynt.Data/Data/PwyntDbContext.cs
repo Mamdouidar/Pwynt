@@ -1,0 +1,18 @@
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Pwynt.Data.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Pwynt.Data.Data
+{
+    public class PwyntDbContext : IdentityDbContext<ApplicationUser>
+    {
+        public PwyntDbContext(DbContextOptions<PwyntDbContext> options) : base(options)
+        {
+        }
+    }
+}
