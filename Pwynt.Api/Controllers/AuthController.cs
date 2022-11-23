@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pwynt.Core.Dtos;
 using Pwynt.Core.Interfaces;
+using System.Data;
 
 namespace Pwynt.Api.Controllers
 {
@@ -45,6 +47,7 @@ namespace Pwynt.Api.Controllers
         }
 
         [HttpPost("addrole")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddRoleAsync(AddRoleDto addRoleDto)
         {
             if (!ModelState.IsValid)
