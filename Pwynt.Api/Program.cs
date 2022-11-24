@@ -85,6 +85,7 @@ builder.Services.AddAuthentication(options =>
         };
     });
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 
 var app = builder.Build();
 

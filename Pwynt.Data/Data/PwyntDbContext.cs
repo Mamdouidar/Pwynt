@@ -14,5 +14,7 @@ namespace Pwynt.Data.Data
         public PwyntDbContext(DbContextOptions<PwyntDbContext> options) : base(options)
         {
         }
+
+        public DbSet<Category> Categories { get; set; }
     }
 }
