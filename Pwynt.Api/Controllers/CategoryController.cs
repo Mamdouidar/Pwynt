@@ -10,17 +10,17 @@ namespace Pwynt.Api.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly IGenericService<Category> _categoryService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(IGenericService<Category> categoryService)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _categoryService = categoryService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var categories = await _categoryService.GetAll();
+            var categories = await _unitOfWork.Categories.GetAll();
 
             if(categories == null)
                 return NotFound();
@@ -31,7 +31,7 @@ namespace Pwynt.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var category = await _categoryService.GetByIdAsync(id);
+            var category = await _unitOfWork.Categories.GetByIdAsync(id);
 
             if(category == null)
                 return NotFound();
@@ -42,7 +42,7 @@ namespace Pwynt.Api.Controllers
         [HttpGet("Search")]
         public async Task<IActionResult> GetByName([FromQuery] string name)
         {
-            var category = await _categoryService.Find(c => c.Name == name);
+            var category = await _unitOfWork.Categories.Find(c => c.Name == name);
 
             if(category == null)
                 return NotFound();
@@ -60,7 +60,8 @@ namespace Pwynt.Api.Controllers
                     Name = categoryDto.Name,
                 };
 
-                await _categoryService.AddAsync(category);
+                await _unitOfWork.Categories.AddAsync(category);
+                _unitOfWork.Complete();
                 
                 return Ok(category);
             }
@@ -71,13 +72,13 @@ namespace Pwynt.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync(int id, [FromBody] CategoryDto categoryDto)
         {
-            var category = await _categoryService.GetByIdAsync(id);
+            var category = await _unitOfWork.Categories.GetByIdAsync(id);
 
             if(category == null)
                 return NotFound();
 
             category.Name = categoryDto.Name;
-            _categoryService.Save();
+            _unitOfWork.Complete();
 
             return Ok(category);
         }
@@ -85,12 +86,13 @@ namespace Pwynt.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            var category = await _categoryService.GetByIdAsync(id);
+            var category = await _unitOfWork.Categories.GetByIdAsync(id);
 
             if(category == null)
                 return NotFound();
 
-            _categoryService.DeleteAsync(category);
+            _unitOfWork.Categories.Delete(category);
+            _unitOfWork.Complete();
 
             return Ok(category);
         }

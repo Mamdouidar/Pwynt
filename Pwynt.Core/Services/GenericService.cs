@@ -37,20 +37,13 @@ namespace Pwynt.Core.Services
         public async Task<T> AddAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
-            _context.SaveChanges();
-
+            
             return entity;
         }
 
-        public void DeleteAsync(T entity)
+        public void Delete(T entity)
         {
             _context.Remove(entity);
-            Save();
-        }
-
-        public void Save()
-        {
-            _context.SaveChanges();
         }
     }
 }

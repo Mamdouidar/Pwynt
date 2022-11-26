@@ -17,8 +17,6 @@ namespace Pwynt.Core.Interfaces
 
         Task<T> AddAsync(T entity);
 
-        void DeleteAsync(T entity);
-
-        void Save();
+        void Delete(T entity);
     }
 }
