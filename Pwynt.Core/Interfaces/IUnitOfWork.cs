@@ -10,6 +10,7 @@ namespace Pwynt.Core.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IGenericService<Category> Categories { get; }
+        IGenericService<Product> Products { get; }
 
         int Complete();
     }

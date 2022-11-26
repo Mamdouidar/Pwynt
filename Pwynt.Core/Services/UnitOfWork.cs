@@ -14,12 +14,14 @@ namespace Pwynt.Core.Services
         private readonly PwyntDbContext _context;
 
         public IGenericService<Category> Categories { get; private set; }
+        public IGenericService<Product> Products { get; private set; }
 
         public UnitOfWork(PwyntDbContext context)
         {
             _context = context;
 
             Categories = new GenericService<Category>(_context);
+            Products = new GenericService<Product>(_context);
         }
 
         public int Complete()
