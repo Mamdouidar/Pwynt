@@ -20,7 +20,7 @@ namespace Pwynt.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var products = await _unitOfWork.Products.GetAll();
+            var products = await _unitOfWork.Products.GetAllWithIncludesAsync(new[] { "Category" });
 
             if (products == null)
                 return NotFound();
@@ -31,7 +31,7 @@ namespace Pwynt.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var product = await _unitOfWork.Products.GetByIdAsync(id);
+            var product = await _unitOfWork.Products.GetByIdWithIncludesAsync(p => p.Id == id, new[] { "Category" });
 
             if (product == null)
                 return NotFound();

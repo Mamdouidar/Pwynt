@@ -24,9 +24,33 @@ namespace Pwynt.Core.Services
             return await _context.Set<T>().ToListAsync();
         }
 
+        public async Task<IEnumerable<T>> GetAllWithIncludesAsync(string[] includes)
+        {
+            IQueryable<T> query = _context.Set<T>();
+
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
+
+            return await query.ToListAsync();
+        }
+
         public async Task<T> GetByIdAsync(int id)
         {
             return await _context.Set<T>().FindAsync(id);
+        }
+
+        public async Task<T> GetByIdWithIncludesAsync(Expression<Func<T, bool>> criteria, string[] includes)
+        {
+            //return await _context.Set<T>().FindAsync(id);
+
+            IQueryable<T> query = _context.Set<T>();
+
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
+
+            return await query.FirstOrDefaultAsync(criteria);
         }
 
         public async Task<T> Find(Expression<Func<T, bool>> criteria)

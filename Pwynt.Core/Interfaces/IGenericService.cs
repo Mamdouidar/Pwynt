@@ -11,7 +11,11 @@ namespace Pwynt.Core.Interfaces
     {
         Task<IEnumerable<T>> GetAll();
 
+        Task<IEnumerable<T>> GetAllWithIncludesAsync(string[] includes);
+
         Task<T> GetByIdAsync(int id);
+
+        Task<T> GetByIdWithIncludesAsync(Expression<Func<T, bool>> criteria, string[] includes);
 
         Task<T> Find(Expression<Func<T, bool>> criteria);
 
