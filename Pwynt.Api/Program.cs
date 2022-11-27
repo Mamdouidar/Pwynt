@@ -9,6 +9,7 @@ using Pwynt.Core.Services;
 using Pwynt.Data.Data;
 using Pwynt.Data.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<PwyntDbContext>(e => e.UseSqlServer(builder.Configuration.GetConnectionString("Pwynt")));
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<PwyntDbContext>();
 builder.Services.AddControllers();
+    
+    
+//    .AddJsonOptions(options =>
+//{
+//    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+//});
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

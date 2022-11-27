@@ -12,6 +12,10 @@ namespace Pwynt.Core.Interfaces
         IGenericService<Category> Categories { get; }
         IGenericService<Product> Products { get; }
 
+        IGenericService<Customer> Customers { get; }
+        IGenericService<Order> Orders { get; }
+        IGenericService<OrderItem> OrderItems { get; }
+
         int Complete();
     }
 }

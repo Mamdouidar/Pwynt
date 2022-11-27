@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Pwynt.Data.Models
 {
@@ -19,7 +20,7 @@ namespace Pwynt.Data.Models
         public decimal FinalPrice { get; set; }
         public int CustomerId { get; set; }
 
-        public Customer Customer { get; set; }
+        //public Customer Customer { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
     }
 }

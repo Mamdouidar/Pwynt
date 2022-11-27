@@ -32,7 +32,7 @@ namespace Pwynt.Core.Services
                 foreach (var include in includes)
                     query = query.Include(include);
 
-            return await query.ToListAsync();
+            return await query.IgnoreAutoIncludes().ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)

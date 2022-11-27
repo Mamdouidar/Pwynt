@@ -16,12 +16,19 @@ namespace Pwynt.Core.Services
         public IGenericService<Category> Categories { get; private set; }
         public IGenericService<Product> Products { get; private set; }
 
+        public IGenericService<Customer> Customers { get; private set; }
+        public IGenericService<Order> Orders { get; private set; }
+        public IGenericService<OrderItem> OrderItems { get; private set; }
+
         public UnitOfWork(PwyntDbContext context)
         {
             _context = context;
 
             Categories = new GenericService<Category>(_context);
             Products = new GenericService<Product>(_context);
+            Customers = new GenericService<Customer>(_context);
+            Orders = new GenericService<Order>(_context);
+            OrderItems = new GenericService<OrderItem>(_context);
         }
 
         public int Complete()
