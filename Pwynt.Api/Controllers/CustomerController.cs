@@ -31,7 +31,7 @@ namespace Pwynt.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var customer = await _unitOfWork.Customers.GetByIdWithIncludesAsync(p => p.Id == id, new[] { "Orders" });
+            var customer = await _unitOfWork.Customers.GetByIdWithIncludesAsync(c => c.Id == id, new[] { "Orders" });
 
             if (customer == null)
                 return NotFound();
