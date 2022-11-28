@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pwynt.Core.Dtos;
 using Pwynt.Core.Interfaces;
+using Pwynt.Core.Queries.OrderQueries;
 using Pwynt.Data.Models;
 
 namespace Pwynt.Api.Controllers
@@ -11,32 +13,30 @@ namespace Pwynt.Api.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMediator _mediator;
 
-        public OrderController(IUnitOfWork unitOfWork)
+        public OrderController(IUnitOfWork unitOfWork, IMediator mediator)
         {
             _unitOfWork = unitOfWork;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var orders = await _unitOfWork.Orders.GetAllWithIncludesAsync(new[] { "OrderItems", "OrderItems.Product", "OrderItems.Product.Category" });
+            var query = new GetAllOrdersQuery();
+            var result = await _mediator.Send(query);
 
-            if (orders == null)
-                return NotFound();
-
-            return Ok(orders);
+            return result != null ? Ok(result) : NotFound();
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var order = await _unitOfWork.Orders.GetByIdWithIncludesAsync(o => o.Id == id, new[] { "OrderItems", "OrderItems.Product", "OrderItems.Product.Category" });
+            var query = new GetOrderByIdQuery(id);
+            var result = await _mediator.Send(query);
 
-            if (order == null)
-                return NotFound();
-
-            return Ok(order);
+            return result != null ? Ok(result) : NotFound();
         }
 
         [HttpPost]

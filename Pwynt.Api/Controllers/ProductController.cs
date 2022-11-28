@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pwynt.Core.Dtos;
 using Pwynt.Core.Interfaces;
+using Pwynt.Core.Queries.ProductQueries;
 using Pwynt.Data.Models;
 
 namespace Pwynt.Api.Controllers
@@ -11,32 +13,44 @@ namespace Pwynt.Api.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMediator _mediator;
 
-        public ProductController(IUnitOfWork unitOfWork)
+        public ProductController(IUnitOfWork unitOfWork, IMediator mediator)
         {
             _unitOfWork = unitOfWork;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var products = await _unitOfWork.Products.GetAllWithIncludesAsync(new[] { "Category" });
+            var query = new GetAllProductsQuery();
+            var result = await _mediator.Send(query);
 
-            if (products == null)
-                return NotFound();
+            return result != null ? Ok(result) : NotFound();
 
-            return Ok(products);
+            //var products = await _unitOfWork.Products.GetAllWithIncludesAsync(new[] { "Category" });
+
+            //if (products == null)
+            //    return NotFound();
+
+            //return Ok(products);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var product = await _unitOfWork.Products.GetByIdWithIncludesAsync(p => p.Id == id, new[] { "Category" });
+            var query = new GetProductByIdQuery(id);
+            var result = await _mediator.Send(query);
 
-            if (product == null)
-                return NotFound();
+            return result != null ? Ok(result) : NotFound();
 
-            return Ok(product);
+            //var product = await _unitOfWork.Products.GetByIdWithIncludesAsync(p => p.Id == id, new[] { "Category" });
+
+            //if (product == null)
+            //    return NotFound();
+
+            //return Ok(product);
         }
 
         [HttpGet("Search")]

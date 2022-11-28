@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pwynt.Core.Dtos;
 using Pwynt.Core.Interfaces;
+using Pwynt.Core.Queries;
+using Pwynt.Core.Queries.CategoryQueries;
 using Pwynt.Data.Models;
 
 namespace Pwynt.Api.Controllers
@@ -11,32 +14,30 @@ namespace Pwynt.Api.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMediator _mediator;
 
-        public CategoryController(IUnitOfWork unitOfWork)
+        public CategoryController(IUnitOfWork unitOfWork, IMediator mediator)
         {
             _unitOfWork = unitOfWork;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var categories = await _unitOfWork.Categories.GetAll();
+            var query = new GetAllCategoriesQuery();
+            var result = await _mediator.Send(query);
 
-            if(categories == null)
-                return NotFound();
-
-            return Ok(categories);
+            return result != null ? Ok(result) : NotFound();
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var category = await _unitOfWork.Categories.GetByIdAsync(id);
+            var query = new GetCategoryByIdQuery(id);
+            var result = await _mediator.Send(query);
 
-            if(category == null)
-                return NotFound();
-
-            return Ok(category);
+            return result != null ? Ok(result) : NotFound();
         }
 
         [HttpGet("Search")]

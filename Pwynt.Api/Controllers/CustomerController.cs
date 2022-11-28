@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pwynt.Core.Dtos;
 using Pwynt.Core.Interfaces;
+using Pwynt.Core.Queries.CustomerQueries;
 using Pwynt.Data.Models;
 
 namespace Pwynt.Api.Controllers
@@ -11,32 +13,30 @@ namespace Pwynt.Api.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMediator _mediator;
 
-        public CustomerController(IUnitOfWork unitOfWork)
+        public CustomerController(IUnitOfWork unitOfWork, IMediator mediator)
         {
             _unitOfWork = unitOfWork;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var customers = await _unitOfWork.Customers.GetAllWithIncludesAsync(new[] { "Orders" });
+            var query = new GetAllCustomersQuery();
+            var result = await _mediator.Send(query);
 
-            if (customers == null)
-                return NotFound();
-
-            return Ok(customers);
+            return result != null ? Ok(result) : BadRequest();
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var customer = await _unitOfWork.Customers.GetByIdWithIncludesAsync(c => c.Id == id, new[] { "Orders" });
+            var query = new GetCustomerByIdQuery(id);
+            var result = await _mediator.Send(query);
 
-            if (customer == null)
-                return NotFound();
-
-            return Ok(customer);
+            return result != null ? Ok(result) : BadRequest();
         }
 
         [HttpGet("Search")]
